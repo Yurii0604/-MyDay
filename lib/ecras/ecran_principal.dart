@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'pagina_calendario.dart';
 import 'pagina_inicio.dart';
 
 class EcranPrincipal extends StatefulWidget {
@@ -15,7 +15,7 @@ class _EcranPrincipalState extends State<EcranPrincipal> {
 
   static const List<Widget> _paginas = [
     PaginaInicio(),
-    _Provisorio('Calendário'),
+    PaginaCalendario(),
     _Provisorio('Estatísticas'),
     _Provisorio('Perfil'),
   ];
