@@ -39,7 +39,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Nome da aplicação
                   const Text(
                     'MyDay',
                     style: TextStyle(
@@ -52,7 +51,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
-                  // Título principal
                   const Text(
                     'Organiza o teu dia,\nalcança os teus objetivos.',
                     textAlign: TextAlign.center,
@@ -148,7 +146,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 22),
 
-                  // Indicadores
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -160,7 +157,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
-                  // Botão Começar
                   SizedBox(
                     width: double.infinity,
                     height: 54,
