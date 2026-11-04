@@ -5,6 +5,9 @@ import 'ecras/ecran_registo.dart';
 import 'tema.dart';
 import 'ecras/ecran_login.dart';
 import 'ecras/ecran_recuperar.dart';
+import 'ecras/ecran_tarefa.dart';
+import 'modelos/tarefa.dart';
+import 'widgets/cartao_tarefa.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,14 @@ class MyDay extends StatelessWidget {
             '/login': (context) => const EcranLogin(),
             '/recuperar': (context) => const EcranRecuperar(),
             '/principal': (context) => const _EmConstrucao(),
+            '/tarefa': (context) {
+              // Recebe a tarefa a editar, ou a data de uma tarefa nova.
+              final argumento = ModalRoute.of(context)?.settings.arguments;
+              return EcranTarefa(
+                tarefa: argumento is Tarefa ? argumento : null,
+                dataInicial: argumento is DateTime ? argumento : null,
+              );
+            },
           },
           builder: (context, filho) {
             return ColoredBox(
@@ -58,8 +69,24 @@ class _EmConstrucao extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Ecrã principal em construção')),
+    final estado = EstadoApp.instancia;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tarefas (provisório)')),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Adicionar tarefa',
+        onPressed: () => Navigator.pushNamed(context, '/tarefa'),
+        child: const Icon(Icons.add),
+      ),
+      body: ListenableBuilder(
+        listenable: estado,
+        builder: (context, _) {
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [for (final t in estado.tarefas) CartaoTarefa(tarefa: t)],
+          );
+        },
+      ),
     );
   }
 }
