@@ -190,10 +190,8 @@ class EcranInicial extends StatelessWidget {
                     height: 54,
                     child: OutlinedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Entrar na tua conta')),
-                        );
-                      },
+  Navigator.pushNamed(context, '/login');
+},
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF124B3A),
                         side: const BorderSide(color: Color(0xFF55A887)),

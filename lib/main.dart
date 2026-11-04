@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'dados/estado_app.dart';
 import 'ecran_inicial.dart';
 import 'ecras/ecran_registo.dart';
 import 'tema.dart';
+import 'ecras/ecran_login.dart';
+import 'ecras/ecran_recuperar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,8 @@ class MyDay extends StatelessWidget {
           routes: {
             '/inicial': (context) => const EcranInicial(),
             '/registo': (context) => const EcranRegisto(),
+            '/login': (context) => const EcranLogin(),
+            '/recuperar': (context) => const EcranRecuperar(),
             '/principal': (context) => const _EmConstrucao(),
           },
           builder: (context, filho) {
