@@ -166,9 +166,7 @@ class EcranInicial extends StatelessWidget {
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Vamos começar!')),
-                        );
+                        Navigator.pushNamed(context, '/registo');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF20845F),

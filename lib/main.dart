@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'dados/estado_app.dart';
 import 'ecran_inicial.dart';
+import 'ecras/ecran_registo.dart';
+import 'tema.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EstadoApp.instancia.carregar();
   runApp(const MyDay());
 }
 
@@ -11,11 +16,47 @@ class MyDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'MyDay',
-      theme: ThemeData(useMaterial3: true),
-      home: const EcranInicial(),
+    final estado = EstadoApp.instancia;
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: estado.temaEscuro,
+      builder: (context, escuro, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MyDay',
+          theme: temaClaro,
+          darkTheme: temaEscuroApp,
+          themeMode: escuro ? ThemeMode.dark : ThemeMode.light,
+          home: estado.autenticado ? const _EmConstrucao() : const EcranInicial(),
+          routes: {
+            '/inicial': (context) => const EcranInicial(),
+            '/registo': (context) => const EcranRegisto(),
+            '/principal': (context) => const _EmConstrucao(),
+          },
+          builder: (context, filho) {
+            return ColoredBox(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: filho,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _EmConstrucao extends StatelessWidget {
+  const _EmConstrucao();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('Ecrã principal em construção')),
     );
   }
 }
