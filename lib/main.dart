@@ -14,7 +14,7 @@ class MyDay extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MyDay',
-      theme: ThemeData(useMaterial3: true, fontFamily: 'Roboto'),
+      theme: ThemeData(useMaterial3: true),
       home: const EcranInicial(),
     );
   }
