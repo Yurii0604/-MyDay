@@ -1,17 +1,27 @@
-# my_day
 
-A new Flutter project.
+# MyDay
 
-## Getting Started
+Aplicação móvel desenvolvida em Flutter e Dart para organizar tarefas e atividades diárias.
 
-This project is a starting point for a Flutter application.
+## Objetivo
 
-A few resources to get you started if this is your first Flutter project:
+O objetivo do MyDay é ajudar os utilizadores a organizar o seu dia, gerir tarefas e acompanhar as suas atividades.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Tecnologias utilizadas
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter
+- Dart
+- Visual Studio Code
+- Git e GitHub
+
+## Funcionalidades
+
+- Ecrã inicial
+- Registo e início de sessão
+- Criação de tarefas
+- Organização de tarefas por categorias
+- Gestão de atividades diárias
+
+## Estado do projeto
+
+Projeto em desenvolvimento.
