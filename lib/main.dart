@@ -10,6 +10,7 @@ import 'ecras/ecran_tarefa.dart';
 import 'ecras/ecran_todas_tarefas.dart';
 import 'modelos/tarefa.dart';
 import 'tema.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   // Lê os dados guardados antes de abrir a aplicação.
@@ -31,6 +32,13 @@ class MyDay extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'MyDay',
+          locale: const Locale('pt', 'PT'),
+          supportedLocales: const [Locale('pt', 'PT')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           theme: temaClaro,
           darkTheme: temaEscuroApp,
           themeMode: escuro ? ThemeMode.dark : ThemeMode.light,

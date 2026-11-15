@@ -55,14 +55,3 @@ class _EcranPrincipalState extends State<EcranPrincipal> {
     );
   }
 }
-
-class _Provisorio extends StatelessWidget {
-  final String texto;
-
-  const _Provisorio(this.texto);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('$texto (em construção)'));
-  }
-}
