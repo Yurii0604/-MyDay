@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'ecran_registo.dart';
+import 'pagina_principal.dart';
 
 class EcranLogin extends StatelessWidget {
   const EcranLogin({super.key});
@@ -22,6 +23,7 @@ class EcranLogin extends StatelessWidget {
               padding: const EdgeInsets.all(28),
               child: Column(
                 children: [
+                  // Logotipo
                   const Icon(
                     Icons.eco_rounded,
                     size: 75,
@@ -30,6 +32,7 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
+                  // Nome da aplicação
                   const Text(
                     'MyDay',
                     style: TextStyle(
@@ -41,6 +44,7 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 35),
 
+                  // Título
                   const Text(
                     'Bem-vindo de volta!',
                     style: TextStyle(
@@ -60,6 +64,7 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 35),
 
+                  // Email
                   TextField(
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
@@ -76,6 +81,7 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
+                  // Palavra-passe
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -92,14 +98,16 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
+                  // Botão Entrar
                   SizedBox(
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login em desenvolvimento'),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PaginaPrincipal(),
                           ),
                         );
                       },
@@ -123,6 +131,7 @@ class EcranLogin extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
+                  // Acesso ao registo
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
