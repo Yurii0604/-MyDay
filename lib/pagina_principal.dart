@@ -1,7 +1,78 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class PaginaPrincipal extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'tarefa.dart';
+import 'nova_tarefa.dart';
+
+class PaginaPrincipal extends StatefulWidget {
   const PaginaPrincipal({super.key});
+
+  @override
+  State<PaginaPrincipal> createState() => _PaginaPrincipalState();
+}
+
+class _PaginaPrincipalState extends State<PaginaPrincipal> {
+  List<Tarefa> tarefas = [];
+
+  final verde = const Color(0xFF20845F);
+
+  @override
+  void initState() {
+    super.initState();
+    carregarTarefas();
+  }
+
+  Future<void> carregarTarefas() async {
+    final prefs = await SharedPreferences.getInstance();
+    final dados = prefs.getString('tarefas');
+
+    if (dados != null) {
+      final lista = jsonDecode(dados);
+
+      setState(() {
+        tarefas = (lista as List).map((item) => Tarefa.fromJson(item)).toList();
+      });
+    }
+  }
+
+  Future<void> guardarTarefas() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final dados = tarefas.map((t) => t.toJson()).toList();
+
+    await prefs.setString('tarefas', jsonEncode(dados));
+  }
+
+  Future<void> adicionarTarefa() async {
+    final novaTarefa = await Navigator.push<Tarefa>(
+      context,
+      MaterialPageRoute(builder: (context) => const NovaTarefa()),
+    );
+
+    if (novaTarefa != null) {
+      setState(() {
+        tarefas.add(novaTarefa);
+      });
+
+      await guardarTarefas();
+    }
+  }
+
+  Future<void> concluirTarefa(int index, bool? valor) async {
+    setState(() {
+      tarefas[index].concluida = valor ?? false;
+    });
+
+    await guardarTarefas();
+  }
+
+  double get progresso {
+    if (tarefas.isEmpty) return 0;
+
+    return tarefas.where((t) => t.concluida).length / tarefas.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,57 +86,30 @@ class PaginaPrincipal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Cabeçalho
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Olá!',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF124B3A),
-                        ),
-                      ),
+              const Text(
+                'Olá!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF124B3A),
+                ),
+              ),
 
-                      const SizedBox(height: 5),
+              const SizedBox(height: 5),
 
-                      const Text(
-                        'Organiza o teu dia.',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF557368),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD3F0DF),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.person_outline,
-                      color: Color(0xFF20845F),
-                      size: 28,
-                    ),
-                  ),
-                ],
+              const Text(
+                'Organiza o teu dia.',
+                style: TextStyle(fontSize: 15, color: Color(0xFF557368)),
               ),
 
               const SizedBox(height: 30),
 
-              // Cartão de progresso
+              // Progresso
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF20845F),
+                  color: verde,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Column(
@@ -76,23 +120,24 @@ class PaginaPrincipal extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 17,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
                     const SizedBox(height: 18),
 
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '0 de 0 tarefas concluídas',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          '${tarefas.where((t) => t.concluida).length} '
+                          'de ${tarefas.length} tarefas concluídas',
+                          style: const TextStyle(color: Colors.white),
                         ),
 
                         Text(
-                          '0%',
-                          style: TextStyle(
+                          '${(progresso * 100).round()}%',
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -105,11 +150,13 @@ class PaginaPrincipal extends StatelessWidget {
 
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: const LinearProgressIndicator(
-                        value: 0,
+                      child: LinearProgressIndicator(
+                        value: progresso,
                         minHeight: 8,
-                        backgroundColor: Color(0xFF70B99A),
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        backgroundColor: const Color(0xFF70B99A),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -118,128 +165,98 @@ class PaginaPrincipal extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              // Título das tarefas
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Tarefas de hoje',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF173D32),
-                    ),
-                  ),
-
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Ver todas',
-                      style: TextStyle(color: Color(0xFF20845F)),
-                    ),
-                  ),
-                ],
+              const Text(
+                'As minhas tarefas',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF173D32),
+                ),
               ),
 
               const SizedBox(height: 15),
 
-              // Lista vazia
+              // Lista de tarefas
               Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 85,
-                        height: 85,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE3F2E9),
-                          borderRadius: BorderRadius.circular(25),
+                child: tarefas.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Ainda não tens tarefas.\n'
+                          'Adiciona a tua primeira tarefa!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFF557368),
+                            height: 1.5,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.checklist_rounded,
-                          size: 48,
-                          color: Color(0xFF20845F),
-                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: tarefas.length,
+                        itemBuilder: (context, index) {
+                          final tarefa = tarefas[index];
+
+                          return Card(
+                            color: Colors.white,
+                            elevation: 0,
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: CheckboxListTile(
+                              activeColor: verde,
+                              value: tarefa.concluida,
+                              onChanged: (valor) {
+                                concluirTarefa(index, valor);
+                              },
+                              title: Text(
+                                tarefa.tema,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: tarefa.concluida
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${tarefa.categoria} • '
+                                '${tarefa.prioridade}\n'
+                                '${tarefa.data.day}/'
+                                '${tarefa.data.month}/'
+                                '${tarefa.data.year}',
+                              ),
+                            ),
+                          );
+                        },
                       ),
-
-                      const SizedBox(height: 18),
-
-                      const Text(
-                        'Ainda não tens tarefas',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF173D32),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      const Text(
-                        'Adiciona a tua primeira tarefa\ne começa a organizar o teu dia.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF557368),
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
         ),
       ),
 
-      // Botão para adicionar tarefa
+      // Adicionar tarefa
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Adicionar tarefa em desenvolvimento'),
-            ),
-          );
-        },
-        backgroundColor: const Color(0xFF20845F),
+        onPressed: adicionarTarefa,
+        backgroundColor: verde,
         foregroundColor: Colors.white,
-        elevation: 2,
         child: const Icon(Icons.add, size: 30),
       ),
 
-      // Navegação inferior
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF20845F),
+        selectedItemColor: verde,
         unselectedItemColor: const Color(0xFF8A9B93),
         currentIndex: 0,
-        onTap: (index) {
-          if (index != 0) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Página em desenvolvimento')),
-            );
-          }
-        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
             label: 'Início',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month_outlined),
             label: 'Calendário',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             label: 'Estatísticas',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: 'Perfil',
