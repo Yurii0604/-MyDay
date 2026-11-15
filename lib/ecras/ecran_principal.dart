@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pagina_calendario.dart';
 import 'pagina_estatisticas.dart';
 import 'pagina_inicio.dart';
+import 'pagina_perfil.dart';
 
 class EcranPrincipal extends StatefulWidget {
   const EcranPrincipal({super.key});
@@ -18,7 +19,7 @@ class _EcranPrincipalState extends State<EcranPrincipal> {
     PaginaInicio(),
     PaginaCalendario(),
     PaginaEstatisticas(),
-    _Provisorio('Perfil'),
+    PaginaPerfil(),
   ];
 
   @override
