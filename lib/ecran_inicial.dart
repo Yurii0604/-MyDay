@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'ecran_login.dart';
-import 'ecran_registo.dart';
-
 class EcranInicial extends StatelessWidget {
   const EcranInicial({super.key});
 
@@ -42,7 +39,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Nome da aplicação
                   const Text(
                     'MyDay',
                     style: TextStyle(
@@ -55,7 +51,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
-                  // Título principal
                   const Text(
                     'Organiza o teu dia,\nalcança os teus objetivos.',
                     textAlign: TextAlign.center,
@@ -151,7 +146,6 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 22),
 
-                  // Indicadores
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -163,18 +157,12 @@ class EcranInicial extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
-                  // Botão Começar
                   SizedBox(
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EcranRegisto(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, '/registo');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF20845F),
@@ -202,13 +190,8 @@ class EcranInicial extends StatelessWidget {
                     height: 54,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EcranLogin(),
-                          ),
-                        );
-                      },
+  Navigator.pushNamed(context, '/login');
+},
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF124B3A),
                         side: const BorderSide(color: Color(0xFF55A887)),
@@ -242,10 +225,9 @@ class EcranInicial extends StatelessWidget {
 
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const EcranLogin(),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Entrar na tua conta'),
                             ),
                           );
                         },
