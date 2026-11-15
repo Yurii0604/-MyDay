@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'ecran_login.dart';
+import 'ecran_registo.dart';
+
 class EcranInicial extends StatelessWidget {
   const EcranInicial({super.key});
 
@@ -166,8 +169,11 @@ class EcranInicial extends StatelessWidget {
                     height: 54,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Vamos começar!')),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EcranRegisto(),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -196,8 +202,11 @@ class EcranInicial extends StatelessWidget {
                     height: 54,
                     child: OutlinedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Entrar na tua conta')),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EcranLogin(),
+                          ),
                         );
                       },
                       style: OutlinedButton.styleFrom(
@@ -233,9 +242,10 @@ class EcranInicial extends StatelessWidget {
 
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Entrar na tua conta'),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EcranLogin(),
                             ),
                           );
                         },
