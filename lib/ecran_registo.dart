@@ -3,16 +3,52 @@ import 'package:flutter/material.dart';
 import 'ecran_login.dart';
 import 'pagina_principal.dart';
 
-class EcranRegisto extends StatelessWidget {
+class EcranRegisto extends StatefulWidget {
   const EcranRegisto({super.key});
+
+  @override
+  State<EcranRegisto> createState() => _EcranRegistoState();
+}
+
+class _EcranRegistoState extends State<EcranRegisto> {
+  final nomeController = TextEditingController();
+  final emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    nomeController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  void registar() {
+    String nome = nomeController.text.trim();
+    String email = emailController.text.trim();
+
+    if (nome.isEmpty || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preenche todos os campos.')),
+      );
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            PaginaPrincipal(nomeUtilizador: nome, emailUtilizador: email),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F8F6),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFEAF8F0), Color(0xFFFFFFFF)],
+            colors: [Color(0xFFEAF8F0), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -23,7 +59,6 @@ class EcranRegisto extends StatelessWidget {
               padding: const EdgeInsets.all(28),
               child: Column(
                 children: [
-                  // Logotipo
                   const Icon(
                     Icons.eco_rounded,
                     size: 75,
@@ -32,7 +67,6 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // Nome da aplicação
                   const Text(
                     'MyDay',
                     style: TextStyle(
@@ -44,9 +78,8 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 35),
 
-                  // Título
                   const Text(
-                    'Criar uma conta',
+                    'Criar conta',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -57,15 +90,15 @@ class EcranRegisto extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   const Text(
-                    'Regista-te para começares a organizar o teu dia.',
+                    'Preenche os teus dados para começar a usar o MyDay.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Color(0xFF557368), fontSize: 14),
+                    style: TextStyle(color: Color(0xFF557368)),
                   ),
 
                   const SizedBox(height: 30),
 
-                  // Nome
                   TextField(
+                    controller: nomeController,
                     decoration: InputDecoration(
                       labelText: 'Nome',
                       prefixIcon: const Icon(Icons.person_outline),
@@ -80,8 +113,8 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Email
                   TextField(
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: 'Email',
@@ -97,7 +130,6 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Palavra-passe
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -114,7 +146,6 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Confirmar palavra-passe
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -131,19 +162,11 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 25),
 
-                  // Botão Registar
                   SizedBox(
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PaginaPrincipal(),
-                          ),
-                        );
-                      },
+                      onPressed: registar,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF20845F),
                         foregroundColor: Colors.white,
@@ -153,7 +176,7 @@ class EcranRegisto extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'Registar',
+                        'Criar conta',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -164,7 +187,6 @@ class EcranRegisto extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // Acesso ao login
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -172,7 +194,6 @@ class EcranRegisto extends StatelessWidget {
                         'Já tens uma conta?',
                         style: TextStyle(color: Color(0xFF557368)),
                       ),
-
                       TextButton(
                         onPressed: () {
                           Navigator.push(

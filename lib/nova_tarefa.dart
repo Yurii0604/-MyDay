@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'tarefa.dart';
 
 class NovaTarefa extends StatefulWidget {
-  const NovaTarefa({super.key});
+  final Tarefa? tarefa;
+
+  const NovaTarefa({super.key, this.tarefa});
 
   @override
   State<NovaTarefa> createState() => _NovaTarefaState();
@@ -17,6 +19,19 @@ class _NovaTarefaState extends State<NovaTarefa> {
   String categoria = 'Estudo';
   String prioridade = 'Média';
   DateTime data = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.tarefa != null) {
+      temaController.text = widget.tarefa!.tema;
+      descricaoController.text = widget.tarefa!.descricao;
+      categoria = widget.tarefa!.categoria;
+      prioridade = widget.tarefa!.prioridade;
+      data = widget.tarefa!.data;
+    }
+  }
 
   @override
   void dispose() {
@@ -42,26 +57,26 @@ class _NovaTarefaState extends State<NovaTarefa> {
   }
 
   void guardar() {
-    if (temaController.text.trim().isEmpty) {
+    if (temaController.text.isEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Introduz o tema.')));
       return;
     }
 
-    if (categoria == 'Outra' && categoriaController.text.trim().isEmpty) {
+    if (categoria == 'Outra' && categoriaController.text.isEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Introduz a categoria.')));
       return;
     }
 
     final tarefa = Tarefa(
-      tema: temaController.text.trim(),
-      descricao: descricaoController.text.trim(),
-      categoria: categoria == 'Outra'
-          ? categoriaController.text.trim()
-          : categoria,
+      tema: temaController.text,
+      descricao: descricaoController.text,
+      categoria: categoria == 'Outra' ? categoriaController.text : categoria,
       prioridade: prioridade,
       data: data,
+      hora: '',
+      concluida: widget.tarefa?.concluida ?? false,
     );
 
     Navigator.pop(context, tarefa);
@@ -73,9 +88,14 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8F6),
+
       appBar: AppBar(
-        title: const Text('Nova tarefa'),
+        title: Text(
+          widget.tarefa == null ? 'Adicionar tarefa' : 'Editar tarefa',
+        ),
         backgroundColor: const Color(0xFFF5F8F6),
+        foregroundColor: const Color(0xFF124B3A),
+        elevation: 0,
       ),
 
       body: SingleChildScrollView(
@@ -83,9 +103,9 @@ class _NovaTarefaState extends State<NovaTarefa> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Criar uma tarefa',
-              style: TextStyle(
+            Text(
+              widget.tarefa == null ? 'Criar uma tarefa' : 'Alterar tarefa',
+              style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF124B3A),
@@ -99,10 +119,14 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
             TextField(
               controller: temaController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Ex.: Estudar Java',
                 filled: true,
                 fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
 
@@ -114,10 +138,14 @@ class _NovaTarefaState extends State<NovaTarefa> {
             TextField(
               controller: descricaoController,
               maxLines: 3,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Descrição da tarefa...',
                 filled: true,
                 fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
 
@@ -128,9 +156,13 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
             DropdownButtonFormField<String>(
               value: categoria,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
               items:
                   [
@@ -144,21 +176,56 @@ class _NovaTarefaState extends State<NovaTarefa> {
                     return DropdownMenuItem(value: item, child: Text(item));
                   }).toList(),
               onChanged: (valor) {
-                setState(() => categoria = valor!);
+                setState(() {
+                  categoria = valor!;
+                });
               },
             ),
 
             if (categoria == 'Outra') ...[
               const SizedBox(height: 12),
+
               TextField(
                 controller: categoriaController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Nome da categoria',
                   filled: true,
                   fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ],
+
+            const SizedBox(height: 20),
+
+            const Text('Data'),
+            const SizedBox(height: 8),
+
+            InkWell(
+              onTap: escolherData,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_month, color: verde),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${data.day.toString().padLeft(2, '0')}/'
+                      '${data.month.toString().padLeft(2, '0')}/'
+                      '${data.year}',
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             const SizedBox(height: 20),
 
@@ -167,32 +234,22 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
             DropdownButtonFormField<String>(
               value: prioridade,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
               items: ['Baixa', 'Média', 'Alta'].map((item) {
                 return DropdownMenuItem(value: item, child: Text(item));
               }).toList(),
               onChanged: (valor) {
-                setState(() => prioridade = valor!);
+                setState(() {
+                  prioridade = valor!;
+                });
               },
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text('Data'),
-            const SizedBox(height: 8),
-
-            ListTile(
-              tileColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              leading: const Icon(Icons.calendar_month, color: verde),
-              title: Text('${data.day}/${data.month}/${data.year}'),
-              trailing: const Icon(Icons.edit_calendar),
-              onTap: escolherData,
             ),
 
             const SizedBox(height: 30),
@@ -205,8 +262,16 @@ class _NovaTarefaState extends State<NovaTarefa> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: verde,
                   foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
-                child: const Text('Guardar tarefa'),
+                child: Text(
+                  widget.tarefa == null
+                      ? 'Guardar tarefa'
+                      : 'Guardar alterações',
+                ),
               ),
             ),
           ],

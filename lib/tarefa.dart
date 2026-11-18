@@ -4,6 +4,7 @@ class Tarefa {
   String categoria;
   String prioridade;
   DateTime data;
+  String hora;
   bool concluida;
 
   Tarefa({
@@ -12,6 +13,7 @@ class Tarefa {
     required this.categoria,
     required this.prioridade,
     required this.data,
+    this.hora = '09:00',
     this.concluida = false,
   });
 
@@ -22,6 +24,7 @@ class Tarefa {
       'categoria': categoria,
       'prioridade': prioridade,
       'data': data.toIso8601String(),
+      'hora': hora,
       'concluida': concluida,
     };
   }
@@ -33,7 +36,8 @@ class Tarefa {
       categoria: json['categoria'],
       prioridade: json['prioridade'],
       data: DateTime.parse(json['data']),
-      concluida: json['concluida'],
+      hora: json['hora'] ?? '09:00',
+      concluida: json['concluida'] ?? false,
     );
   }
 }
